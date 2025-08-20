@@ -1,14 +1,15 @@
 {
   "name": "inventory-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "lint": "eslint . --ext .ts,.js"
+    "lint": "eslint . --ext .ts,.js",
+    "type-check": "tsc --noEmit"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,9 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
     "@types/nodemon": "^1.19.6",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
