@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts,.js",
     "type-check": "tsc --noEmit"
@@ -30,6 +30,7 @@
     "eslint": "^9.33.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }
 }
