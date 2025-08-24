@@ -1,14 +1,12 @@
-// import EnhancedTable from './components/mui-table';
 import { Container } from '@mui/material';
-// import ButtonAppBar from './components/app-bar';
-import {ButtonAppBar, EnhancedTable} from './components';
+import { ButtonAppBar, EnhancedTable } from './components';
 
 function App() {
 
   return (
     <>
       <ButtonAppBar />
-      <Container  >
+      <Container sx={{ marginTop: 2 }} >
         <EnhancedTable />
       </Container>
     </>

@@ -1,3 +1,3 @@
 export * from './app-bar';
-export * from './mui-table/mui-table';
+export * from './mui-table';
 
