@@ -4,7 +4,9 @@ import { storeManagerBrowserRouter } from './routes/routes';
 function App() {
 
   return (
-    <RouterProvider router={storeManagerBrowserRouter} />
+    <>
+      <RouterProvider router={storeManagerBrowserRouter} />
+    </>
   );
 }
 
