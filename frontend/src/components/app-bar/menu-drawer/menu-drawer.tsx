@@ -1,58 +1,47 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import type { IAppBarMenuDrawerProps } from './menu-drawer-types';
 import type { Anchor } from '../app-bar-types';
 import { SWAP_DRAWER_POSITION } from '../app-bar-constants';
+import { MenuDrawerItem } from './menu-drawer-item';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 
-export function AppBarMenuDrawer(prop: Readonly<IAppBarMenuDrawerProps>) {
-    const { toggleDrawer, state } = prop;
+export function MenuDrawer(prop: Readonly<IAppBarMenuDrawerProps>) {
+    const { toggleDrawer, state, itemList, selectedItem, setSelectedItem } = prop;
 
+    const params = useParams();
+    const location = useLocation();
+    console.log(location, params);
 
+    const onItemClick = useCallback((menuItem: string) => {
+        toggleDrawer(SWAP_DRAWER_POSITION, false)
+        setSelectedItem(menuItem);
+    }, []);
 
-    const list = (anchor: Anchor) => (
+    const list = useCallback((anchor: Anchor) => (
         <Box
             sx={{ width: 'auto', top: '75px' }}
             className='Box-1111111111'
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
         >
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
+                {itemList.map((text, index) => (
+                    <MenuDrawerItem
+                        key={text}
+                        index={index}
+                        itemName={text}
+                        onItemClick={onItemClick}
+                        isSelected={text === selectedItem}
+                    />
                 ))}
             </List>
+            {selectedItem}
             <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
         </Box>
-    );
+    ), []);
 
     return (
         <div>
@@ -73,7 +62,7 @@ export function AppBarMenuDrawer(prop: Readonly<IAppBarMenuDrawerProps>) {
                     sx={{ top: '75px' }}
                     anchor={SWAP_DRAWER_POSITION}
                     open={state[SWAP_DRAWER_POSITION]}
-                    onClose={toggleDrawer(SWAP_DRAWER_POSITION, false)}
+                    onClose={() => toggleDrawer(SWAP_DRAWER_POSITION, false)}
                 >
                     {list(SWAP_DRAWER_POSITION)}
                 </Drawer>
