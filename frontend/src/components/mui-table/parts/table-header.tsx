@@ -7,7 +7,7 @@ export function EnhancedTableHead(props: Readonly<EnhancedTableProps>) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
     const createSortHandler =
-        (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+        (property: any) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
         };
 

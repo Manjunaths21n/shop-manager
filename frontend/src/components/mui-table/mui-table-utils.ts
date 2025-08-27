@@ -1,20 +1,12 @@
-import type { Data, Order } from "./mui-table-types";
+import type { Order } from "./mui-table-types";
 
 export function createData(
-  id: number,
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-): Data {
+  id: number, name: string, cost: number, price: number): any {
   return {
     id,
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    cost,
+    price
   };
 }
 
