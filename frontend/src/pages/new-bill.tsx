@@ -3,7 +3,7 @@ import { memo } from "react";
 
 export const NewBill = memo(() => {
     return (
-        <Container sx={{ marginTop: 2 }} >
+        <Container sx={{ marginTop: 2 }} maxWidth={'xl'}>
             <>new bill</>
         </Container>);
 });
