@@ -4,12 +4,18 @@ import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
-import { rows } from './mui-table-constants';
 import type { Order } from './mui-table-types';
 import { EnhancedTableHead, EnhancedTableToolbar } from './parts';
 import { EnhancedTableBody } from './parts/table-body';
 
-export function EnhancedTable() {
+export interface IEnhancedTable {
+  data: any[];
+  column: any[];
+}
+
+export function EnhancedTable(props: IEnhancedTable) {
+  const { column, data: rows } = props;
+  console.log(props);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<any>('calories');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
@@ -25,14 +31,14 @@ export function EnhancedTable() {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
-  };
+  }, [rows]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -53,11 +59,13 @@ export function EnhancedTable() {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
+              headCells={column}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length} />
             <EnhancedTableBody
               selected={selected}
+              rows={rows}
               page={page}
               setSelected={setSelected}
               order={order}

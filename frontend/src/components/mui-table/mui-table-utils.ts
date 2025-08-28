@@ -1,17 +1,5 @@
 import type { Order } from "./mui-table-types";
 
-export function createData(
-  id: number, name: string, cost: number, price: number): any {
-  return {
-    id,
-    name,
-    cost,
-    price
-  };
-}
-
-
-
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;

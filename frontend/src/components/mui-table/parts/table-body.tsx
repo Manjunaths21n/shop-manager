@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { TableBody } from "@mui/material";
-import { rows } from "../mui-table-constants";
 import type { Data, Order } from "../mui-table-types";
 import { getComparator } from "../mui-table-utils";
 import { EnhancedTableRow } from "./table-row";
@@ -11,19 +10,18 @@ interface IEnhancedTableBody {
     setSelected: React.Dispatch<React.SetStateAction<readonly number[]>>;
     order: Order;
     rowsPerPage: number;
+    rows: any[]
     orderBy: keyof Data;
 }
 
 export function EnhancedTableBody(props: Readonly<IEnhancedTableBody>) {
-    const { selected, page, setSelected, order, rowsPerPage, orderBy } = props;
+    const { selected, page, setSelected, order, rowsPerPage, orderBy, rows } = props;
 
-    const visibleRows = useMemo(
-        () =>
-            [...rows]
-                .sort(getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-        [order, orderBy, page, rowsPerPage],
-    );
+    const visibleRows = useMemo(() => (
+        [...rows]
+            .sort(getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    ), [order, orderBy, page, rowsPerPage, rows]);
 
     return (
         <TableBody>

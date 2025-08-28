@@ -15,7 +15,6 @@ export function MenuDrawer(prop: Readonly<IAppBarMenuDrawerProps>) {
 
     const params = useParams();
     const location = useLocation();
-    console.log(location, params);
 
     const onItemClick = useCallback((menuItem: string) => {
         toggleDrawer(SWAP_DRAWER_POSITION, false)

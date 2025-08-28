@@ -58,6 +58,7 @@ export function EnhancedTableRow(props: Readonly<IEnhancedTableBody>) {
             >
                 {row.name}
             </TableCell>
+            <TableCell align="left">{row.category}</TableCell>
             <TableCell align="right">{row.cost}</TableCell>
             <TableCell align="right">{row.price}</TableCell>
         </TableRow>
