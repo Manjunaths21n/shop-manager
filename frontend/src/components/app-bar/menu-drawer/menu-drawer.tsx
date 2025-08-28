@@ -42,7 +42,7 @@ export function MenuDrawer(prop: Readonly<IAppBarMenuDrawerProps>) {
             <Divider />
         </Box>
     ), []);
-
+    const drawerWidth = 240;
     return (
         <div>
             <React.Fragment key={SWAP_DRAWER_POSITION}>
@@ -59,8 +59,16 @@ export function MenuDrawer(prop: Readonly<IAppBarMenuDrawerProps>) {
                         hideBackdrop: true,
                     }}
                     className='Drawer-1111111111'
-                    sx={{ top: '75px' }}
+                    sx={{
+                        top: '75px', width: drawerWidth,
+                        flexShrink: 0,
+                        "& .MuiDrawer-paper": {
+                            width: drawerWidth,
+                            boxSizing: "border-box",
+                        },
+                    }}
                     anchor={SWAP_DRAWER_POSITION}
+                    variant='persistent'
                     open={state[SWAP_DRAWER_POSITION]}
                     onClose={() => toggleDrawer(SWAP_DRAWER_POSITION, false)}
                 >
