@@ -33,7 +33,7 @@ export function EnhancedTable(props: IEnhancedTable) {
 
   const handleSelectAllClick = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = rows?.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
