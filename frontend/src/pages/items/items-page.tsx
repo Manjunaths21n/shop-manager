@@ -18,7 +18,13 @@ export const Items = memo(() => {
     const [editIndex, setEditIndex] = useState<number>(-1);
 
     const getItems = useCallback(async () => {
-        const response = await itemsService.getItems()
+
+        let response = []
+        try {
+            response = await itemsService.getItems() ?? [];
+        } catch (err) {
+            console.log('Failed to fetch Items', err);
+        }
         console.log(response);
         const parsedRowData = response?.map((rowData: any, index: number) => {
             return createData(index, rowData.name, rowData.category, rowData.cost, rowData.price)
