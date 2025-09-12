@@ -19,7 +19,7 @@ export function ButtonAppBar() {
 
   const [state, setState] = useState<IDrawerState>({
     top: false,
-    left: false,
+    left: true,
     bottom: false,
     right: false,
   });
