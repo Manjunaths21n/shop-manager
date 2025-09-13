@@ -1,47 +1,52 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import { IconButton, Box, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Paper from '@mui/material/Paper';
-import { EnhancedTableHead, EnhancedTableToolbar } from './parts';
+import { EnhancedTableHead } from './parts';
 import { EnhancedTableBody } from './parts/body';
 import { createData } from './utils';
 import type { Order, TableColumn } from './types';
 
 
-interface ITableRenderer<T = object>{
+interface ITableRenderer<T = object> {
     data: T[];
     columns: TableColumn[];
-    editIndex:number;
-    setEditIndex(value:number):void;
+    editIndex: number;
+    AllowAddRecord?: boolean;
+    setEditIndex(value: number): void;
 }
 
-export function TableRenderer<T = object>(props:ITableRenderer<T>) {
-    const {columns, data, editIndex, setEditIndex}=props;
+export function TableRenderer<T = object>(props: ITableRenderer<T>) {
+    const { columns, data, editIndex, setEditIndex, AllowAddRecord = false } = props;
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<any>('calories');
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [tableRows, setTableRows] = useState<any[]>(data);
+    // const [tableRows, setTableRows] = useState<any[]>([]);
+
+    // useEffect(() => {
+    //     setTableRows(data);
+    // }, [data])
 
     const onAddNewItem = useCallback(() => {
-        setTableRows(preRows => {
-            const newItemId = preRows[preRows.length - 1].id + 1;
-            return [createData(newItemId, 'New Item', `Category ${newItemId}`, 200, 300), ...preRows];
-        });
+        // setTableRows(preRows => {
+        //     const newItemId = preRows[preRows.length - 1].id + 1;
+        //     return [createData(newItemId, 'New Item', `Category ${newItemId}`, 200, 300), ...preRows];
+        // });
         setEditIndex(0);
     }, []);
 
 
     const onItemChange = useCallback((updatedRow: T) => {
-        setTableRows(preRows => {
-            const clonedPreRows = [...preRows];
-            clonedPreRows.splice(editIndex, 1, updatedRow);
-            return clonedPreRows;
-        });
+        // setTableRows(preRows => {
+        //     const clonedPreRows = [...preRows];
+        //     clonedPreRows.splice(editIndex, 1, updatedRow);
+        //     return clonedPreRows;
+        // });
     }, [editIndex]);
 
     const onEditClick = useCallback((editIndex: number) => {
@@ -50,11 +55,11 @@ export function TableRenderer<T = object>(props:ITableRenderer<T>) {
 
 
     const onDeleteClick = useCallback((index: number) => {
-        setTableRows(preRows => {
-            const clonedRows = [...preRows];
-            clonedRows.splice(index, 1);
-            return clonedRows;
-        })
+        // setTableRows(preRows => {
+        //     const clonedRows = [...preRows];
+        //     clonedRows.splice(index, 1);
+        //     return clonedRows;
+        // })
         setEditIndex(-1);
     }, []);
 
@@ -74,7 +79,7 @@ export function TableRenderer<T = object>(props:ITableRenderer<T>) {
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = tableRows.map((n) => n.id);
+            const newSelected = data.map((n:any) => n.id);
             setSelected(newSelected);
             return;
         }
@@ -93,8 +98,8 @@ export function TableRenderer<T = object>(props:ITableRenderer<T>) {
     return (
         <>
             <Box sx={{ width: '100%' }}>
-                <Paper sx={{ width: '100%', mb: 2 }}>
-                    <EnhancedTableToolbar numSelected={selected.length} onAddNewItem={onAddNewItem} />
+                <Paper sx={{ width: '100%'  }} elevation={9}>
+                    {/* <EnhancedTableToolbar numSelected={selected.length} onAddNewItem={onAddNewItem} AllowAddRecord={AllowAddRecord} /> */}
                     <TableContainer>
                         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'} >
                             <EnhancedTableHead
@@ -104,35 +109,26 @@ export function TableRenderer<T = object>(props:ITableRenderer<T>) {
                                 orderBy={orderBy}
                                 onSelectAllClick={handleSelectAllClick}
                                 onRequestSort={handleRequestSort}
-                                rowCount={tableRows.length} />
+                                rowCount={data.length} />
                             <EnhancedTableBody
                                 selected={selected} editIndex={editIndex} rowsPerPage={rowsPerPage}
                                 onEditClick={onEditClick} onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
-                                onCancleClick={onCancleClick} tableRows={tableRows} handleRowChange={onItemChange}
-                                page={page} setSelected={setSelected} order={order} orderBy={orderBy} 
+                                onCancleClick={onCancleClick} tableRows={data} handleRowChange={onItemChange}
+                                page={page} setSelected={setSelected} order={order} orderBy={orderBy}
                                 columns={columns}
-                                />
+                            />
                         </Table>
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={tableRows.length}
+                        count={data.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                 </Paper>
-            </Box>
-            <Box sx={{ width: '100%', display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onSaveClick}
-                >
-                    Save
-                </Button>
             </Box>
         </>
     );

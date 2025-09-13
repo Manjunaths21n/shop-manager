@@ -5,7 +5,7 @@ import { useServices } from "../../context";
 import { createData } from "./mui-table-utils";
 import { headCells, ItemsData } from "./mui-table-constants";
 import { TableRenderer } from "../../components/table";
-import { TableRow, TableCell, TextField, IconButton, Box, Input } from "@mui/material";
+import { TableRow, TableCell, TextField, IconButton, Box, Input, Autocomplete, InputLabel, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from '@mui/icons-material/Save';
@@ -43,8 +43,8 @@ export const Items = memo(() => {
 
     const ItemsColumn: TableColumn[] = useMemo(() => ([
         {
-            id: 'column1',
-            label: 'Column 1',
+            id: 'name',
+            label: 'Item Name',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
                 const { editIndex: _editIndex, rowIndex, value, columnName } = args;
@@ -66,8 +66,8 @@ export const Items = memo(() => {
             isVisable: true
         },
         {
-            id: 'column2',
-            label: 'Column 2',
+            id: 'category',
+            label: 'Category',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
                 const { editIndex: _editIndex, rowIndex, value, columnName } = args;
@@ -86,46 +86,86 @@ export const Items = memo(() => {
                     </>
                 );
             },
-            disablePadding: false,
+            disablePadding: true,
             isVisable: true
         },
         {
-            id: 'action',
-            label: 'Action',
-            type: '',
+            id: 'cost',
+            label: 'Item Cost',
+            type: 'number',
             renderCell: (args: IRenderCellArgs) => {
                 const { editIndex: _editIndex, rowIndex, value, columnName } = args;
                 console.log(args);
-
                 return (
-                    <Box sx={{ display: "flex", flexDirection: "row" }}>
+                    <>
                         {_editIndex === rowIndex ?
-                            <>  <IconButton aria-label="save" size="small" onClick={() => _setEditIndex(-1)}>
-                                <SaveIcon fontSize="small" />
-                            </IconButton>
-                                <IconButton aria-label="cancel" size="small" onClick={() => _setEditIndex(-1)}>
-                                    <CancelIcon fontSize="small" />
-                                </IconButton></> : <>
-                                <IconButton aria-label="edit" size="small" onClick={() => _setEditIndex(rowIndex)}>
-                                    <EditIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton aria-label="delete" size="small" onClick={() => { console.log('deleted index', rowIndex); }}>
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                            </>
+                            <TextField
+                                type="number"
+                                value={value}
+                                onChange={(e) => console.log(columnName, e.target.value)}
+                                variant="standard"
+                                size="small"
+                            /> :
+                            value
                         }
-                    </Box>
+                    </>
                 );
             },
             disablePadding: false,
             isVisable: true
-        }]), [_setEditIndex]);
+        },
+        {
+            id: 'price',
+            label: 'Item Price',
+            type: 'number',
+            renderCell: (args: IRenderCellArgs) => {
+                const { editIndex: _editIndex, rowIndex, value, columnName } = args;
+                console.log(args);
+                return (
+                    <>
+                        {_editIndex === rowIndex ?
+                            <TextField
+                                type="number"
+                                value={value}
+                                onChange={(e) => console.log(columnName, e.target.value)}
+                                variant="standard"
+                                size="small"
+                            /> :
+                            value
+                        }
+                    </>
+                );
+            },
+            disablePadding: false,
+            isVisable: true
+        }
+    ]), [_setEditIndex]);
 
 
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={'xl'} >
-            <EnhancedTable column={headCells} data={rows} />
-            <TableRenderer data={ItemsData} columns={ItemsColumn} editIndex={editIndex} setEditIndex={_setEditIndex} />
+            <Stack direction="row" spacing={6} width={'100%'} marginBottom={5} >
+                <Box width={'50%'}>
+                    <InputLabel>Item Name</InputLabel>
+                    <Autocomplete
+                        disablePortal
+                        options={[]}
+                        sx={{ width: '100%' }}
+                        renderInput={(params) => <TextField {...params} label="Select Item Name To Filter" />}
+                    />
+                </Box>
+                <Box width={'50%'}>
+
+                    <InputLabel>Category</InputLabel>
+                    <Autocomplete
+                        disablePortal
+                        options={['soop']}
+                        sx={{ width: '100%' }}
+                        renderInput={(params) => <TextField {...params} label="Select Category To Filter" />}
+                    />
+                </Box>
+            </Stack>
+            <TableRenderer data={rows} columns={ItemsColumn} editIndex={editIndex} setEditIndex={_setEditIndex} />
         </Container>
     );
 });

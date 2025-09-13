@@ -1,8 +1,9 @@
 import { useMemo } from "react";
-import { TableBody } from "@mui/material";
+import { Container, TableBody } from "@mui/material";
 import { getComparator } from "../utils";
 import { EnhancedTableRow } from "./row";
 import type { Order, TableColumn } from "../types";
+import { TableRow } from "@mui/material";
 
 interface IEnhancedTableBody<T = object> {
     selected: readonly number[];
@@ -32,20 +33,24 @@ export function EnhancedTableBody<T = object>(props: Readonly<IEnhancedTableBody
     ), [tableRows, order, orderBy, page, rowsPerPage]);
 
     return (
-        <TableBody>
-            {visibleRows.map((row, index) => {
-                return (
-                    <EnhancedTableRow
-                        row={row} rowIndex={index} editIndex={editIndex}
-                        key={index} onEditClick={onEditClick} onCancleClick={onCancleClick}
-                        onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
-                        selected={selected}
-                        // setSelected={setSelected}
-                        columns={columns}
-                        handleRowChange={handleRowChange}
-                    />
-                );
-            })}
-        </TableBody>
+        <>
+            <TableBody>
+                {visibleRows.length ? visibleRows.map((row, index) => {
+                    return (
+                        <EnhancedTableRow
+                            row={row} rowIndex={index} editIndex={editIndex}
+                            key={index} onEditClick={onEditClick} onCancleClick={onCancleClick}
+                            onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
+                            selected={selected}
+                            // setSelected={setSelected}
+                            columns={columns}
+                            handleRowChange={handleRowChange}
+                        />
+                    );
+                }) :
+                    null}
+            </TableBody>
+            {visibleRows.length === 0 && <Container sx={{ alignContent: 'center', height: '50px' }}>Empty Items</Container>}
+        </>
     );
 }

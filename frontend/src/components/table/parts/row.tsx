@@ -26,25 +26,6 @@ export function EnhancedTableRow<T = object>(props: Readonly<IEnhancedTableBody<
 
     const isItemSelected = selected.includes(row.id);
 
-    // const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    //     const selectedIndex = selected.indexOf(id);
-    //     let newSelected: readonly number[] = [];
-
-    //     if (selectedIndex === -1) {
-    //         newSelected = newSelected.concat(selected, id);
-    //     } else if (selectedIndex === 0) {
-    //         newSelected = newSelected.concat(selected.slice(1));
-    //     } else if (selectedIndex === selected.length - 1) {
-    //         newSelected = newSelected.concat(selected.slice(0, -1));
-    //     } else if (selectedIndex > 0) {
-    //         newSelected = newSelected.concat(
-    //             selected.slice(0, selectedIndex),
-    //             selected.slice(selectedIndex + 1),
-    //         );
-    //     }
-    //     setSelected(newSelected);
-    // };
-
     const handleChange = <K extends keyof T>(field: K, value: T[K]) => {
         const updated = { ...row };
         updated[field] = value;
@@ -52,29 +33,18 @@ export function EnhancedTableRow<T = object>(props: Readonly<IEnhancedTableBody<
     };
 
     const cellRender = useCallback(() => {
-        const cells = [];
-        // columns.forEach(element => {
-            
-        // });
-        for (const key in row) {
-            if (Object.hasOwn(row, key)) {
-                // const recordData = row[key];
-                const column = columns.find((column) => column.id === key);
-                if (column) {
-
-                    cells.push(<AddItemTableCell
-                        row={row} rowIndex={rowIndex} editIndex={editIndex}
-                        key={rowIndex}
-                        columnName={key}
-                        renderCell={column.renderCell}
-                    // onEditClick={onEditClick} onCancleClick={onCancleClick}
-                    // onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
-                    // onCellValueChange={handleChange}
-                    />);
-                }
-
-            }
-        }
+        const cells: any[] = [];
+        columns.forEach(columnInfo => {
+            cells.push(<AddItemTableCell
+                row={row} rowIndex={rowIndex} editIndex={editIndex}
+                key={rowIndex}
+                column={columnInfo}
+                renderCell={columnInfo.renderCell}
+            // onEditClick={onEditClick} onCancleClick={onCancleClick}
+            // onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
+            // onCellValueChange={handleChange}
+            />);
+        });
         return cells;
     }, [editIndex, rowIndex, columns, row]);
 

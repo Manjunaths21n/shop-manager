@@ -1,4 +1,7 @@
 export interface EnhancedTableToolbarProps {
     numSelected: number;
-    onAddNewItem():void;
+    onAddNewItem(): void;
+    AllowAddRecord: boolean;
+    showIcon?:boolean;
+    showFilter?:boolean;
 }

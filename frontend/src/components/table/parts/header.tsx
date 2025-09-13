@@ -16,7 +16,7 @@ export function EnhancedTableHead(props: Readonly<EnhancedTableProps>) {
                 {columns.map((column) => (
                     <TableCell
                         key={column.id}
-                        align={column.type === 'number' ? 'right' : 'left'}
+                        // align={column.type === 'number' ? 'right' : 'left'}
                         padding={column.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === column.id ? order : false}
                     >

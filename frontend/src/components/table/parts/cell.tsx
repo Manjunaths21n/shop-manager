@@ -4,11 +4,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
-import type { IRenderCellArgs } from "../types";
+import type { IRenderCellArgs, TableColumn } from "../types";
 
 interface IAddItemTableCell<T = object> {
     row: T;
-    columnName: string;
+    column: TableColumn;
     rowIndex: number;
     editIndex: number;
     renderCell(args: IRenderCellArgs): React.JSX.Element;
@@ -20,7 +20,7 @@ interface IAddItemTableCell<T = object> {
 }
 
 export const AddItemTableCell = (props: IAddItemTableCell) => {
-    const { row: _row, rowIndex, editIndex, renderCell, columnName } = props;
+    const { row: _row, rowIndex, editIndex, renderCell, column } = props;
     const labelId = `enhanced-table-checkbox-${rowIndex}`;
 
     const row = _row as any;
@@ -93,8 +93,10 @@ export const AddItemTableCell = (props: IAddItemTableCell) => {
             /> : row.price}
         </TableCell> */}
 
-        <TableCell id={labelId}>
-            {renderCell({ editIndex, rowIndex, value: row[columnName], columnName })}
+        <TableCell id={labelId} key={column.id} height={'50px'}
+            // align={column.type === 'number' ? 'right' : 'left'}
+            padding={column.disablePadding ? 'none' : 'normal'}>
+            {renderCell({ editIndex, rowIndex, value: row[column.id], columnName: column.id })}
         </TableCell>
 
     </>
