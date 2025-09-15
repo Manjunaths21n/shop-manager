@@ -1,10 +1,4 @@
 import type { HeadCell } from "../../components/add-items-table/types";
-import type { IRenderCellArgs, TableColumn } from "../../components/table/types";
-import { TableRow, TableCell, TextField, IconButton, Box, Input } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
 
 export const ItemsData = [
   {

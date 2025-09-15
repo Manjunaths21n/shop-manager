@@ -9,16 +9,33 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useCallback, useState } from "react";
 
 export function TableToolbar(props: Readonly<EnhancedTableToolbarProps>) {
-  const { numSelected, onAddNewItem, AllowAddRecord, showIcon = false, showFilter } = props;
+  const { numSelected, onAddNewItem, AllowAddRecord, showIcon = false, showFilter, onCancel, onDelete, onEdit, onSave } = props;
   const [showSave, setShowSave] = useState(false);
 
   const onEditClick = useCallback(() => {
+    onEdit?.();
     setShowSave(true);
-  }, []);
+  }, [onEdit]);
+
+  const onAddClick = useCallback(() => {
+    onAddNewItem();
+    onEditClick();
+  }, [onEditClick, onAddNewItem]);
 
   const onCancelClick = useCallback(() => {
+    onCancel?.();
     setShowSave(false);
-  }, []);
+  }, [onCancel]);
+
+  const onDeleteClick = useCallback(() => {
+    onDelete?.();
+    setShowSave(false);
+  }, [onDelete]);
+
+  const onSaveClick = useCallback(() => {
+    onSave?.();
+    setShowSave(false);
+  }, [onSave]);
 
   return (
     <Toolbar
@@ -33,28 +50,28 @@ export function TableToolbar(props: Readonly<EnhancedTableToolbarProps>) {
         },
       ]}
     >
-      <Container sx={{p:0}}>
+      <Container sx={{ p: 0 }}>
         {numSelected > 0 ? <>
           <Tooltip title="Delete">
-            {showIcon ? <IconButton>
+            {showIcon ? <IconButton onClick={onDeleteClick}>
               <DeleteIcon />
             </IconButton> :
-              <Button startIcon={<DeleteIcon />} sx={{ textTransform: "none" }}>
+              <Button startIcon={<DeleteIcon />} sx={{ textTransform: "none" }} onClick={onDeleteClick}>
                 Delete
               </Button>}
           </Tooltip>
           {showSave ?
             <Tooltip title="Save">
-              {showIcon ? <IconButton>
-                <DeleteIcon />
+              {showIcon ? <IconButton onClick={onSaveClick} >
+                <SaveIcon />
               </IconButton> :
-                <Button startIcon={<SaveIcon />} sx={{ textTransform: "none" }}>
+                <Button startIcon={<SaveIcon />} sx={{ textTransform: "none" }} onClick={onSaveClick}>
                   Save
                 </Button>}
             </Tooltip> :
             <Tooltip title="Edit">
               {showIcon ? <IconButton onClick={onEditClick}>
-                <DeleteIcon />
+                <EditIcon />
               </IconButton> :
                 <Button startIcon={<EditIcon />} sx={{ textTransform: "none" }} onClick={onEditClick}>
                   Edit
@@ -73,10 +90,10 @@ export function TableToolbar(props: Readonly<EnhancedTableToolbarProps>) {
           :
           AllowAddRecord && (
             <Tooltip title="Add Item">
-              {showIcon ? <IconButton>
+              {showIcon ? <IconButton onClick={onAddClick}>
                 <AddSharpIcon />
               </IconButton> :
-                <Button startIcon={<AddSharpIcon />} sx={{ textTransform: "none" }} onClick={onAddNewItem}>
+                <Button startIcon={<AddSharpIcon />} sx={{ textTransform: "none" }} onClick={onAddClick}>
                   Add Item
                 </Button>}
             </Tooltip>

@@ -14,13 +14,10 @@ import type { Order, TableColumn } from './types';
 interface ITableRenderer<T = object> {
     data: T[];
     columns: TableColumn[];
-    editIndex: number;
-    AllowAddRecord?: boolean;
-    setEditIndex(value: number): void;
 }
 
 export function TableRenderer<T = object>(props: ITableRenderer<T>) {
-    const { columns, data, editIndex, setEditIndex, AllowAddRecord = false } = props;
+    const { columns, data, } = props;
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<any>('calories');
     const [selected, setSelected] = useState<readonly number[]>([]);
@@ -32,13 +29,13 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
     //     setTableRows(data);
     // }, [data])
 
-    const onAddNewItem = useCallback(() => {
-        // setTableRows(preRows => {
-        //     const newItemId = preRows[preRows.length - 1].id + 1;
-        //     return [createData(newItemId, 'New Item', `Category ${newItemId}`, 200, 300), ...preRows];
-        // });
-        setEditIndex(0);
-    }, []);
+    // const onAddNewItem = useCallback(() => {
+    // setTableRows(preRows => {
+    //     const newItemId = preRows[preRows.length - 1].id + 1;
+    //     return [createData(newItemId, 'New Item', `Category ${newItemId}`, 200, 300), ...preRows];
+    // });
+    // setEditIndex(0);
+    // }, []);
 
 
     const onItemChange = useCallback((updatedRow: T) => {
@@ -47,11 +44,11 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
         //     clonedPreRows.splice(editIndex, 1, updatedRow);
         //     return clonedPreRows;
         // });
-    }, [editIndex]);
-
-    const onEditClick = useCallback((editIndex: number) => {
-        setEditIndex(editIndex);
     }, []);
+
+    // const onEditClick = useCallback((editIndex: number) => {
+    //     setEditIndex(editIndex);
+    // }, []);
 
 
     const onDeleteClick = useCallback((index: number) => {
@@ -60,15 +57,15 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
         //     clonedRows.splice(index, 1);
         //     return clonedRows;
         // })
-        setEditIndex(-1);
+        // setEditIndex(-1);
     }, []);
 
     const onCancleClick = useCallback(() => {
-        setEditIndex(-1);
+        // setEditIndex(-1);
     }, []);
 
     const onSaveClick = useCallback(() => {
-        setEditIndex(-1);
+        // setEditIndex(-1);
     }, []);
 
     const handleRequestSort = useCallback((event: React.MouseEvent<unknown>, property: any,) => {
@@ -79,7 +76,7 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = data.map((n:any) => n.id);
+            const newSelected = data.map((n: any) => n.id);
             setSelected(newSelected);
             return;
         }
@@ -98,8 +95,7 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
     return (
         <>
             <Box sx={{ width: '100%' }}>
-                <Paper sx={{ width: '100%'  }} elevation={9}>
-                    {/* <EnhancedTableToolbar numSelected={selected.length} onAddNewItem={onAddNewItem} AllowAddRecord={AllowAddRecord} /> */}
+                <Paper sx={{ width: '100%' }} elevation={9}>
                     <TableContainer>
                         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'} >
                             <EnhancedTableHead
@@ -111,10 +107,9 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
                                 onRequestSort={handleRequestSort}
                                 rowCount={data.length} />
                             <EnhancedTableBody
-                                selected={selected} editIndex={editIndex} rowsPerPage={rowsPerPage}
-                                onEditClick={onEditClick} onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
-                                onCancleClick={onCancleClick} tableRows={data} handleRowChange={onItemChange}
-                                page={page} setSelected={setSelected} order={order} orderBy={orderBy}
+                                selected={selected} rowsPerPage={rowsPerPage}
+                                tableRows={data} handleRowChange={onItemChange}
+                                page={page} order={order} orderBy={orderBy}
                                 columns={columns}
                             />
                         </Table>

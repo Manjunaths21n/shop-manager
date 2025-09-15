@@ -63,7 +63,8 @@ export const Items = memo(() => {
                 );
             },
             disablePadding: false,
-            isVisable: true
+            isVisable: true,
+            width: '60%'
         },
         {
             id: 'category',
@@ -87,6 +88,7 @@ export const Items = memo(() => {
                 );
             },
             disablePadding: true,
+            width: '20%',
             isVisable: true
         },
         {
@@ -112,6 +114,7 @@ export const Items = memo(() => {
                 );
             },
             disablePadding: false,
+            width: '10%',
             isVisable: true
         },
         {
@@ -137,6 +140,7 @@ export const Items = memo(() => {
                 );
             },
             disablePadding: false,
+            width: '10%',
             isVisable: true
         }
     ]), [_setEditIndex]);
@@ -146,22 +150,19 @@ export const Items = memo(() => {
         <Container sx={{ marginTop: 2 }} maxWidth={'xl'} >
             <Stack direction="row" spacing={6} width={'100%'} marginBottom={5} >
                 <Box width={'50%'}>
-                    <InputLabel>Item Name</InputLabel>
                     <Autocomplete
                         disablePortal
                         options={[]}
                         sx={{ width: '100%' }}
-                        renderInput={(params) => <TextField {...params} label="Select Item Name To Filter" />}
+                        renderInput={(params) => <TextField {...params} label="Filter Item Name" />}
                     />
                 </Box>
                 <Box width={'50%'}>
-
-                    <InputLabel>Category</InputLabel>
                     <Autocomplete
                         disablePortal
                         options={['soop']}
                         sx={{ width: '100%' }}
-                        renderInput={(params) => <TextField {...params} label="Select Category To Filter" />}
+                        renderInput={(params) => <TextField {...params} label="Filter Category" />}
                     />
                 </Box>
             </Stack>

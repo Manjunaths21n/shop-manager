@@ -9,13 +9,14 @@
 
 export interface IRenderCellArgs {
   rowIndex: number;
-  editIndex: number;
   value: any;
-  columnName:string;
+  columnName: string;
+  rowData: Record<string, any>;
 }
 
 export interface TableColumn {
   disablePadding: boolean;
+  width?: string;
   id: string;
   type: string;
   label: string;

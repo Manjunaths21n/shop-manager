@@ -1,26 +1,18 @@
 import { TableRow, TableCell, Checkbox, IconButton, Box, Input } from "@mui/material";
-import { AddItemTableCell } from "./cell";
+import { TableCellCustom } from "./cell";
 import type { TableColumn } from "../types";
 import { useCallback } from "react";
 
 interface IEnhancedTableBody<T = object> {
     row: T;
     selected: readonly number[];
-    // setSelected: React.Dispatch<React.SetStateAction<readonly number[]>>;
     rowIndex: number;
-    editIndex: number;
-    onEditClick(index: number): void;
-    onDeleteClick(index: number): void;
     columns: TableColumn[];
-    // renderCell(): React.JSX.Element;
-    onSaveClick(): void;
-    onCancleClick(): void;
     handleRowChange(value: T): void;
 }
 
-export function EnhancedTableRow<T = object>(props: Readonly<IEnhancedTableBody<T>>) {
-    const { row: _row, selected, rowIndex, editIndex, handleRowChange, columns,
-        onEditClick, onCancleClick, onDeleteClick, onSaveClick } = props;
+export function TableRowCustom<T = object>(props: Readonly<IEnhancedTableBody<T>>) {
+    const { row: _row, selected, rowIndex, handleRowChange, columns } = props;
 
     const row = _row as any;
 
@@ -35,18 +27,15 @@ export function EnhancedTableRow<T = object>(props: Readonly<IEnhancedTableBody<
     const cellRender = useCallback(() => {
         const cells: any[] = [];
         columns.forEach(columnInfo => {
-            cells.push(<AddItemTableCell
-                row={row} rowIndex={rowIndex} editIndex={editIndex}
+            cells.push(<TableCellCustom
+                row={row} rowIndex={rowIndex}
                 key={rowIndex}
                 column={columnInfo}
                 renderCell={columnInfo.renderCell}
-            // onEditClick={onEditClick} onCancleClick={onCancleClick}
-            // onDeleteClick={onDeleteClick} onSaveClick={onSaveClick}
-            // onCellValueChange={handleChange}
             />);
         });
         return cells;
-    }, [editIndex, rowIndex, columns, row]);
+    }, [rowIndex, columns, row]);
 
     return (
         <TableRow

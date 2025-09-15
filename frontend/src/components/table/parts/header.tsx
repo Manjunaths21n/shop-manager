@@ -14,7 +14,7 @@ export function EnhancedTableHead(props: Readonly<EnhancedTableProps>) {
         <TableHead>
             <TableRow>
                 {columns.map((column) => (
-                    <TableCell
+                    column.isVisable ? <TableCell
                         key={column.id}
                         // align={column.type === 'number' ? 'right' : 'left'}
                         padding={column.disablePadding ? 'none' : 'normal'}
@@ -32,7 +32,7 @@ export function EnhancedTableHead(props: Readonly<EnhancedTableProps>) {
                                 </Box>
                             ) : null}
                         </TableSortLabel>
-                    </TableCell>
+                    </TableCell> : null
                 ))}
             </TableRow>
         </TableHead>
