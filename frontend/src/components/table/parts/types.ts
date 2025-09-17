@@ -8,4 +8,6 @@ export interface EnhancedTableToolbarProps {
     AllowAddRecord: boolean;
     showIcon?: boolean;
     showFilter?: boolean;
+    showToggleSelection?: boolean;
+    onToggleAllSelection?(): void;
 }

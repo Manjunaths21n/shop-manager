@@ -12,6 +12,9 @@ const ItemSModleSchema = new mongoose.Schema({
     },
     price: {
         type: Number
+    },
+    itemId:{
+        type: String
     }
 });
 

@@ -1,27 +1,115 @@
 import { ItemsModel } from "../modules";
 
 export const createItem = async (req, res) => {
-    const { name, category, cost, price } = req.body;
+    const { name, category, cost, price, itemId } = req.body;
 
     if (!name || !cost) {
         res.status(404).json({ message: 'required name and cost' })
     }
 
     try {
-        const createdItem = await ItemsModel.create({ name, category, cost, price });
+        const createdItem = await ItemsModel.insertOne({ name, category, cost, price, itemId });
+        // const createdItem = await ItemsModel.create({ name, category, cost, price, itemId });
         res.status(201).json({ success: 'Item Added Succusfully!', item: createdItem });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to create todo' });
+        res.status(500).json({ message: 'Failed to create item' });
     }
 
 }
+export const createItems = async (req, res) => {
+    try {
+        const items = Array.isArray(req.body) ? req.body : [req.body];
 
-export const getItems = async (req, res)=>{
+        const allowedFields = ["name", "category", "cost", "price", "itemId"];
+
+        const validatedItems = items.map(item => {
+            const picked = {};
+            for (const key of allowedFields) {
+                if (item[key] !== undefined) {
+                    picked[key] = item[key];
+                }
+            }
+
+            // Required validation
+            if (!picked.name || picked.cost === undefined) {
+                throw new Error("Each item must have a name and cost");
+            }
+
+            return picked;
+        });
+
+        // Insert all valid items
+        const createdItems = await ItemsModel.insertMany(validatedItems);
+
+        res.status(201).json({
+            success: true,
+            message: "Items added successfully!",
+            items: createdItems,
+        });
+
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            message: err.message || "Failed to create items",
+        });
+    }
+};
+
+export const getItems = async (req, res) => {
     try {
         const modelItems = await ItemsModel.find({});
-        res.status(201).json(modelItems) 
+        res.status(201).json(modelItems)
     } catch (error) {
-        res.status(500).json({message:'Failed to get Items'});
+        res.status(500).json({ message: 'Failed to get Items' });
     }
 }
 
+export const updateItems = async (req, res) => {
+    try {
+        if (!Array.isArray(req.body) || req.body.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Request body must be a non-empty array",
+            });
+        }
+
+        const allowedFields = ["name", "category", "cost", "price"];
+
+        // Build bulk operations
+        const operations = req.body.map((item) => {
+            if (!item.itemId) {
+                throw new Error("Each update must include itemId");
+            }
+
+            const updates = Object.fromEntries(
+                Object.entries(item).filter(([key]) => allowedFields.includes(key))
+            );
+
+            if (Object.keys(updates).length === 0) {
+                throw new Error(`No valid fields provided for itemId: ${item.itemId}`);
+            }
+
+            return {
+                updateMany: {
+                    filter: { itemId: item.itemId },
+                    update: { $set: updates },
+                },
+            };
+        });
+
+        const result = await ItemsModel.bulkWrite(operations, { ordered: false });
+
+        res.status(200).json({
+            success: true,
+            message: "Bulk update completed",
+            matched: result.matchedCount,
+            modified: result.modifiedCount,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update items",
+            error: err.message,
+        });
+    }
+};

@@ -1,6 +1,7 @@
 export interface IClientService {
     get(urlPath: string): Promise<any>;
-    post(urlPath: string, data: Record<string, any>): Promise<any>;
+    post(urlPath: string, data: any): Promise<any>;
+    patch(urlPath: string, data: any): Promise<any>;
 }
 
 export class ClientService implements IClientService {
@@ -31,7 +32,7 @@ export class ClientService implements IClientService {
         }
     }
 
-    async post(urlPath: string, data: Record<string, any>) {
+    async post(urlPath: string, data: any) {
         try {
             const response = await fetch(`${this.#baseURL}/${urlPath}`, {
                 method: "POST",
@@ -52,6 +53,26 @@ export class ClientService implements IClientService {
 
     }
 
+    async patch(urlPath: string, data: any) {
+        try {
+            const response = await fetch(`${this.#baseURL}/${urlPath}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            return response.json();
+        } catch (err) {
+            throw new Error(`Failed to post data Error: ${err}`);
+        }
+
+    }
     // delete() {
 
     // }

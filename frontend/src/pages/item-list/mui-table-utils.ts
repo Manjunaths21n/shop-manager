@@ -1,11 +1,12 @@
 
 export function createData(
-  id: number, name: string, category: string, cost: number, price: number): any {
+  rowId: string, name: string, category: string, cost: number, price: number, itemId: string): any {
   return {
-    id,
+    rowId,
     name,
     category,
     cost,
-    price
+    price,
+    itemId
   };
 }

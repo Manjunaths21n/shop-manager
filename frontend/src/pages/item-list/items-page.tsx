@@ -14,13 +14,17 @@ export const Items = memo(() => {
 
         let response = []
         try {
-            response = await itemsService.getItems() ?? [];
+            response = await itemsService.getItems() ?? [
+                { name: 'value1', category: 'c1', cost: 22, price: 44 },
+                { name: 'value2', category: 'c2', cost: 40, price: 45 },
+                { name: 'value3', category: 'c3', cost: 30, price: 34 },
+                { name: 'value4', category: 'c4', cost: 55, price: 64 }
+            ];
         } catch (err) {
             console.log('Failed to fetch Items', err);
         }
-        console.log(response);
         const parsedRowData = response?.map((rowData: any, index: number) => {
-            return createData(index, rowData.name, rowData.category, rowData.cost, rowData.price)
+            return createData(index, rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId)
         });
         setRows(parsedRowData);
     }, []);

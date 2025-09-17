@@ -1,7 +1,9 @@
 import express from "express";
-import { createItem, getItems } from '../controllers';
+import { createItem, createItems, getItems, updateItems } from '../controllers';
 
 export const itemRouter = express.Router();
 
 itemRouter.get('/items', getItems);
-itemRouter.post('/items', createItem);
+itemRouter.post('/items', createItems);
+itemRouter.post('/item', createItem);
+itemRouter.patch('/items', updateItems);
