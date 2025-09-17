@@ -1,21 +1,14 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { EnhancedTable } from "../../components";
 import Container from "@mui/material/Container";
 import { useServices } from "../../context";
 import { createData } from "./mui-table-utils";
-import { headCells, ItemsData } from "./mui-table-constants";
 import { TableRenderer } from "../../components/table";
-import { TableRow, TableCell, TextField, IconButton, Box, Input, Autocomplete, InputLabel, Stack } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { TextField, Box, Autocomplete, Stack } from "@mui/material";
 import type { IRenderCellArgs, TableColumn } from "../../components/table/types";
 
 export const Items = memo(() => {
     const { itemsService } = useServices();
     const [rows, setRows] = useState([]);
-    const [editIndex, setEditIndex] = useState<number>(-1);
 
     const getItems = useCallback(async () => {
 
@@ -36,30 +29,15 @@ export const Items = memo(() => {
         getItems();
     }, []);
 
-    const _setEditIndex = useCallback((value: number) => {
-        setEditIndex(value);
-    }, []);
-
-
     const ItemsColumn: TableColumn[] = useMemo(() => ([
         {
             id: 'name',
             label: 'Item Name',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
-                const { editIndex: _editIndex, rowIndex, value, columnName } = args;
+                const { value } = args;
                 return (
-                    <>
-                        {_editIndex === rowIndex ?
-                            <TextField
-                                value={value}
-                                onChange={(e) => console.log(columnName, e.target.value)}
-                                variant="standard"
-                                size="small"
-                            /> :
-                            value
-                        }
-                    </>
+                    <>{value}</>
                 );
             },
             disablePadding: false,
@@ -71,20 +49,9 @@ export const Items = memo(() => {
             label: 'Category',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
-                const { editIndex: _editIndex, rowIndex, value, columnName } = args;
-                console.log(args);
+                const { value } = args;
                 return (
-                    <>
-                        {_editIndex === rowIndex ?
-                            <TextField
-                                value={value}
-                                onChange={(e) => console.log(columnName, e.target.value)}
-                                variant="standard"
-                                size="small"
-                            /> :
-                            value
-                        }
-                    </>
+                    <>{value}</>
                 );
             },
             disablePadding: true,
@@ -96,21 +63,9 @@ export const Items = memo(() => {
             label: 'Item Cost',
             type: 'number',
             renderCell: (args: IRenderCellArgs) => {
-                const { editIndex: _editIndex, rowIndex, value, columnName } = args;
-                console.log(args);
+                const { value } = args;
                 return (
-                    <>
-                        {_editIndex === rowIndex ?
-                            <TextField
-                                type="number"
-                                value={value}
-                                onChange={(e) => console.log(columnName, e.target.value)}
-                                variant="standard"
-                                size="small"
-                            /> :
-                            value
-                        }
-                    </>
+                    <>{value}</>
                 );
             },
             disablePadding: false,
@@ -122,28 +77,16 @@ export const Items = memo(() => {
             label: 'Item Price',
             type: 'number',
             renderCell: (args: IRenderCellArgs) => {
-                const { editIndex: _editIndex, rowIndex, value, columnName } = args;
-                console.log(args);
+                const { value } = args;
                 return (
-                    <>
-                        {_editIndex === rowIndex ?
-                            <TextField
-                                type="number"
-                                value={value}
-                                onChange={(e) => console.log(columnName, e.target.value)}
-                                variant="standard"
-                                size="small"
-                            /> :
-                            value
-                        }
-                    </>
+                    <>{value}</>
                 );
             },
             disablePadding: false,
             width: '10%',
             isVisable: true
         }
-    ]), [_setEditIndex]);
+    ]), []);
 
 
     return (
@@ -166,7 +109,7 @@ export const Items = memo(() => {
                     />
                 </Box>
             </Stack>
-            <TableRenderer data={rows} columns={ItemsColumn} editIndex={editIndex} setEditIndex={_setEditIndex} />
+            <TableRenderer data={rows} columns={ItemsColumn} />
         </Container>
     );
 });

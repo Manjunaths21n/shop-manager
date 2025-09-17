@@ -3,7 +3,6 @@ import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import { IconButton, Box, Button } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Paper from '@mui/material/Paper';
 import { EnhancedTableHead } from './parts';
 import { EnhancedTableBody } from './parts/body';
