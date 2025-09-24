@@ -8,7 +8,7 @@ export interface IServiceContext {
 const serviceUrl = import.meta.env.VITE_API_URL ?? (
   import.meta.env.MODE === 'development' ?
     'http://localhost:4000/api' :
-    'https://shop-manager-63k4.onrender.com'
+    'https://shop-manager-63k4.onrender.com/api'
 );
 
 const ServiceContext = createContext<IServiceContext | null>(null);
