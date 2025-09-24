@@ -24,7 +24,7 @@ export const Items = memo(() => {
             console.log('Failed to fetch Items', err);
         }
         const parsedRowData = response?.map((rowData: any, index: number) => {
-            return createData(index, rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId)
+            return createData(index.toString(), rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId)
         });
         setRows(parsedRowData);
     }, []);
