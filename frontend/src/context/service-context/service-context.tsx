@@ -5,12 +5,18 @@ export interface IServiceContext {
   itemsService: ItemsServiceLayerLogic;
 }
 
+const serviceUrl = import.meta.env.VITE_API_URL ?? (
+  import.meta.env.MODE === 'development' ?
+    'http://localhost:4000/api' :
+    'https://shop-manager-63k4.onrender.com'
+);
+
 const ServiceContext = createContext<IServiceContext | null>(null);
 
 export const ServiceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const services = useMemo(() => {
     return {
-      itemsService: new ItemsServiceLayerLogic("http://localhost:4001/api"),
+      itemsService: new ItemsServiceLayerLogic(serviceUrl),
     };
   }, []);
 
