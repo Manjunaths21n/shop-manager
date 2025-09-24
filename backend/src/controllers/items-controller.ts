@@ -1,6 +1,6 @@
 import { ItemsModel } from "../modules";
 
-export const createItem = async (req, res) => {
+export const createItem = async (req: any, res: any) => {
     const { name, category, cost, price, itemId } = req.body;
 
     if (!name || !cost) {
@@ -16,14 +16,14 @@ export const createItem = async (req, res) => {
     }
 
 }
-export const createItems = async (req, res) => {
+export const createItems = async (req: any, res: any) => {
     try {
         const items = Array.isArray(req.body) ? req.body : [req.body];
 
         const allowedFields = ["name", "category", "cost", "price", "itemId"];
 
-        const validatedItems = items.map(item => {
-            const picked = {};
+        const validatedItems = items.map((item: any) => {
+            const picked: Record<string, any> = {};
             for (const key of allowedFields) {
                 if (item[key] !== undefined) {
                     picked[key] = item[key];
@@ -47,7 +47,7 @@ export const createItems = async (req, res) => {
             items: createdItems,
         });
 
-    } catch (err) {
+    } catch (err: any) {
         res.status(400).json({
             success: false,
             message: err.message || "Failed to create items",
@@ -55,7 +55,7 @@ export const createItems = async (req, res) => {
     }
 };
 
-export const getItems = async (req, res) => {
+export const getItems = async (req: any, res: any) => {
     try {
         const modelItems = await ItemsModel.find({});
         res.status(201).json(modelItems)
@@ -64,7 +64,7 @@ export const getItems = async (req, res) => {
     }
 }
 
-export const updateItems = async (req, res) => {
+export const updateItems = async (req: any, res: any) => {
     try {
         if (!Array.isArray(req.body) || req.body.length === 0) {
             return res.status(400).json({
@@ -76,7 +76,7 @@ export const updateItems = async (req, res) => {
         const allowedFields = ["name", "category", "cost", "price"];
 
         // Build bulk operations
-        const operations = req.body.map((item) => {
+        const operations = req.body.map((item: any) => {
             if (!item.itemId) {
                 throw new Error("Each update must include itemId");
             }
@@ -105,7 +105,7 @@ export const updateItems = async (req, res) => {
             matched: result.matchedCount,
             modified: result.modifiedCount,
         });
-    } catch (err) {
+    } catch (err: any) {
         res.status(500).json({
             success: false,
             message: "Failed to update items",
