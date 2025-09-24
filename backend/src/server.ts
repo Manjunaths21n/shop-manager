@@ -2,8 +2,7 @@ import doteEnv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { itemRouter } from './routers';
-
+import { itemRouter } from './routers/items-routers';
 doteEnv.config();
 const PORT = process.env.PORT || 4001;
 
