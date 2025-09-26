@@ -15,11 +15,11 @@ import * as deviceDetect from 'react-device-detect';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-enum PageTitle {
-    ITEM_LIST = 'Item List',
-    ADD_ITEM = 'Add List',
-    NEW_BILL = 'New Bill',
-    SHOW_DUE_LIST = 'Show Due List'
+const PageTitle = {
+    ITEM_LIST: 'Item List',
+    ADD_ITEM: 'Add List',
+    NEW_BILL: 'New Bill',
+    SHOW_DUE_LIST: 'Show Due List'
 }
 
 const itemData = [
