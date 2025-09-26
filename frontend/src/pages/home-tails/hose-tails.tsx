@@ -11,8 +11,8 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import InfoIcon from '@mui/icons-material/Info';
-import * as deviceDetect from 'react-device-detect';
-import { useCallback } from 'react';
+import { isMobile } from 'react-device-detect';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PageTitle = {
@@ -51,9 +51,14 @@ const itemData = [
 
 
 export function TitlebarImageList() {
-    console.log(deviceDetect);
     const navigate = useNavigate();
     const [showNotification, setShowNotification] = React.useState(false);
+    const [isClientMobile, setIsClientMobile] = useState(false);
+
+    useEffect(() => {
+        // This runs only on client side
+        setIsClientMobile(isMobile);
+    }, []);
 
     const handleSelectedMenuItem = useCallback((value: string) => {
         //   setSelectedMenuItem(value)
@@ -69,7 +74,7 @@ export function TitlebarImageList() {
                     width: '100vw',
                 }}
                 gap={20}
-                cols={deviceDetect.isMobile ? 1 : 2} // Set number of columns
+                cols={isClientMobile ? 1 : 2} // Set number of columns
             >
                 {itemData.map((item) => (
                     <ImageListItem
