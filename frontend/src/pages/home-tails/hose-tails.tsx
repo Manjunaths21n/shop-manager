@@ -15,11 +15,11 @@ import { isMobile } from 'react-device-detect';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const PageTitle = {
-    ITEM_LIST: 'Item List',
-    ADD_ITEM: 'Add List',
-    NEW_BILL: 'New Bill',
-    SHOW_DUE_LIST: 'Show Due List'
+export const PageTitle = {
+    ITEM_LIST: 'Item List - ಅಂಗಡಿ ಐಟಂಗಳ ಪಟ್ಟಿ',
+    ADD_ITEM: 'Add List - ಅಂಗಡಿಗೆ ವಸ್ತುಗಳನ್ನು ಸೇರಿಸಿ',
+    NEW_BILL: 'New Bill - ಹೊಸ ಬಿಲ್ ಸೇರಿಸಿ',
+    SHOW_DUE_LIST: 'Show Due List - ಬಾಕಿ ಪಟ್ಟಿಯನ್ನು ತೋರಿಸಿ'
 }
 
 const itemData = [
@@ -136,13 +136,8 @@ export function TitlebarImageList() {
                                 )}
 
                                 <ImageListItemBar
-                                    title={item.title}
+                                    title={`${item.title}`}
                                     subtitle={item.author}
-                                    sx={{
-                                        background: item.disabled
-                                            ? 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
-                                            : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
-                                    }}
                                     actionIcon={
                                         <IconButton
                                             sx={{

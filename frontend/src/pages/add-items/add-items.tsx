@@ -1,9 +1,9 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import { useServices } from "../../context";
 import { TableRenderer } from "../../components/table";
-import { TableRow, TableCell, TextField, IconButton, Box, Input, Stack, Checkbox, Tooltip } from "@mui/material";
+import { TableRow, TableCell, TextField, IconButton, Box, Input, Stack, Checkbox, Tooltip, Skeleton } from "@mui/material";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,6 +15,8 @@ import { createData } from "../item-list/mui-table-utils";
 import { TableToolbar } from "../../components/table/parts";
 import { generateShortId } from "../../utils";
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import { TableSkeleton } from "../../components";
+import { ColumnIds } from "../item-list";
 
 const filter = createFilterOptions<any>();
 
@@ -35,6 +37,8 @@ export const AddItems = memo(() => {
     const [rows, setRows] = useState<any[]>([]);
     const [enableEdit, setEnableEdit] = useState<boolean>(false);
     const [selectedRowId, setSelectedRowId] = useState<string[]>([])
+    const [isPending, startTransition] = useTransition();
+
     const originalRows = useRef<any[]>([])
     const navigate = useNavigate();
 
@@ -54,11 +58,11 @@ export const AddItems = memo(() => {
             return { ...createData(generateShortId(), rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId) }
         });
         originalRows.current = response;
-        setRows(parsedRowData);
+        startTransition(() => setRows(parsedRowData));
     }, []);
 
     useEffect(() => {
-        getItems();
+        startTransition(async () => getItems());
     }, []);
 
     const onEditClick = useCallback(() => {
@@ -67,6 +71,7 @@ export const AddItems = memo(() => {
 
     const onCancelClick = useCallback(() => {
         setEnableEdit(false);
+        setRows((preState) => [...preState].slice(1));
         setSelectedRowId([]);
     }, []);
 
@@ -137,7 +142,7 @@ export const AddItems = memo(() => {
             width: '5%'
         },
         {
-            id: 'name',
+            id: ColumnIds.NAME,
             label: 'Item Name',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
@@ -178,7 +183,7 @@ export const AddItems = memo(() => {
             isVisable: true
         },
         {
-            id: 'cost',
+            id: ColumnIds.COST,
             label: 'Item Cost',
             type: 'number',
             renderCell: (args: IRenderCellArgs) => {
@@ -203,7 +208,7 @@ export const AddItems = memo(() => {
             isVisable: true
         },
         {
-            id: 'category',
+            id: ColumnIds.CATEGORY,
             label: 'Category',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
@@ -244,7 +249,7 @@ export const AddItems = memo(() => {
             isVisable: true
         },
         {
-            id: 'price',
+            id: ColumnIds.PRICE,
             label: 'Item Price',
             type: 'number',
             renderCell: (args: IRenderCellArgs) => {
@@ -302,7 +307,9 @@ export const AddItems = memo(() => {
         <Stack sx={{ marginTop: 2, height: '100%' }} maxWidth={'xl'} className="store-add-items-container" spacing={3}>
             <TableToolbar AllowAddRecord numSelected={selectedRowId.length} onAddNewItem={onAddItem}
                 onCancel={onCancelClick} onDelete={onDeleteClick} onEdit={onEditClick} onSave={onSaveClick} />
-            <TableRenderer data={rows} columns={ItemsColumn} />
+            {isPending ?
+                <TableSkeleton />
+                : <TableRenderer data={rows} columns={ItemsColumn} />}
             <Box sx={{ width: '100%', display: "flex", justifyContent: "flex-end" }}>
                 <Tooltip title='Save'>
                     <Button variant="contained" color="primary" onClick={onItemsSubmit}>

@@ -1,14 +1,23 @@
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import Container from "@mui/material/Container";
 import { useServices } from "../../context";
 import { createData } from "./mui-table-utils";
 import { TableRenderer } from "../../components/table";
-import { TextField, Box, Autocomplete, Stack } from "@mui/material";
+import { TextField, Box, Autocomplete, Stack, Skeleton } from "@mui/material";
 import type { IRenderCellArgs, TableColumn } from "../../components/table/types";
+import { TableSkeleton } from "../../components";
+
+export const ColumnIds = {
+    NAME: 'name',
+    CATEGORY: 'category',
+    COST: 'cost',
+    PRICE: 'price'
+}
 
 export const Items = memo(() => {
     const { itemsService } = useServices();
     const [rows, setRows] = useState([]);
+    const [isPending, startTransition] = useTransition();
 
     const getItems = useCallback(async () => {
 
@@ -26,16 +35,18 @@ export const Items = memo(() => {
         const parsedRowData = response?.map((rowData: any, index: number) => {
             return createData(index.toString(), rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId)
         });
-        setRows(parsedRowData);
+        startTransition(() => setRows(parsedRowData));
     }, []);
 
     useEffect(() => {
-        getItems();
+        startTransition(async () => await getItems());
     }, []);
+
+
 
     const ItemsColumn: TableColumn[] = useMemo(() => ([
         {
-            id: 'name',
+            id: ColumnIds.NAME,
             label: 'Item Name',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
@@ -49,7 +60,7 @@ export const Items = memo(() => {
             width: '60%'
         },
         {
-            id: 'category',
+            id: ColumnIds.CATEGORY,
             label: 'Category',
             type: 'string',
             renderCell: (args: IRenderCellArgs) => {
@@ -63,7 +74,7 @@ export const Items = memo(() => {
             isVisable: true
         },
         {
-            id: 'cost',
+            id: ColumnIds.COST,
             label: 'Item Cost',
             type: 'number',
             renderCell: (args: IRenderCellArgs) => {
@@ -77,7 +88,7 @@ export const Items = memo(() => {
             isVisable: true
         },
         {
-            id: 'price',
+            id: ColumnIds.PRICE,
             label: 'Item Price',
             type: 'number',
             renderCell: (args: IRenderCellArgs) => {
@@ -99,7 +110,7 @@ export const Items = memo(() => {
                 <Box width={'50%'}>
                     <Autocomplete
                         disablePortal
-                        options={[]}
+                        options={rows?.map((info: any) => (info[ColumnIds.NAME])) ?? []}
                         sx={{ width: '100%' }}
                         renderInput={(params) => <TextField {...params} label="Filter Item Name" />}
                     />
@@ -107,13 +118,13 @@ export const Items = memo(() => {
                 <Box width={'50%'}>
                     <Autocomplete
                         disablePortal
-                        options={['soop']}
+                        options={rows?.map((info: any) => (info[ColumnIds.CATEGORY])) ?? []}
                         sx={{ width: '100%' }}
                         renderInput={(params) => <TextField {...params} label="Filter Category" />}
                     />
                 </Box>
             </Stack>
-            <TableRenderer data={rows} columns={ItemsColumn} />
+            {isPending ? <TableSkeleton /> : <TableRenderer data={rows} columns={ItemsColumn} />}
         </Container>
     );
 });
