@@ -22,51 +22,7 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    // const [tableRows, setTableRows] = useState<any[]>([]);
-
-    // useEffect(() => {
-    //     setTableRows(data);
-    // }, [data])
-
-    // const onAddNewItem = useCallback(() => {
-    // setTableRows(preRows => {
-    //     const newItemId = preRows[preRows.length - 1].id + 1;
-    //     return [createData(newItemId, 'New Item', `Category ${newItemId}`, 200, 300), ...preRows];
-    // });
-    // setEditIndex(0);
-    // }, []);
-
-
-    const onItemChange = useCallback((updatedRow: T) => {
-        // setTableRows(preRows => {
-        //     const clonedPreRows = [...preRows];
-        //     clonedPreRows.splice(editIndex, 1, updatedRow);
-        //     return clonedPreRows;
-        // });
-    }, []);
-
-    // const onEditClick = useCallback((editIndex: number) => {
-    //     setEditIndex(editIndex);
-    // }, []);
-
-
-    const onDeleteClick = useCallback((index: number) => {
-        // setTableRows(preRows => {
-        //     const clonedRows = [...preRows];
-        //     clonedRows.splice(index, 1);
-        //     return clonedRows;
-        // })
-        // setEditIndex(-1);
-    }, []);
-
-    const onCancleClick = useCallback(() => {
-        // setEditIndex(-1);
-    }, []);
-
-    const onSaveClick = useCallback(() => {
-        // setEditIndex(-1);
-    }, []);
-
+   
     const handleRequestSort = useCallback((event: React.MouseEvent<unknown>, property: any,) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -107,7 +63,7 @@ export function TableRenderer<T = object>(props: ITableRenderer<T>) {
                                 rowCount={data.length} />
                             <EnhancedTableBody
                                 selected={selected} rowsPerPage={rowsPerPage}
-                                tableRows={data} handleRowChange={onItemChange}
+                                tableRows={data}
                                 page={page} order={order} orderBy={orderBy}
                                 columns={columns}
                             />

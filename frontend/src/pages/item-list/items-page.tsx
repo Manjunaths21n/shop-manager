@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Container from "@mui/material/Container";
 import { useServices } from "../../context";
 import { createData } from "./mui-table-utils";
@@ -6,6 +6,8 @@ import { TableRenderer } from "../../components/table";
 import { TextField, Box, Autocomplete, Stack, Skeleton } from "@mui/material";
 import type { IRenderCellArgs, TableColumn } from "../../components/table/types";
 import { TableSkeleton } from "../../components";
+import { generateShortId } from "../../utils";
+import { VoiceToText } from "../../components/mic/mic-component";
 
 export const ColumnIds = {
     NAME: 'name',
@@ -16,12 +18,18 @@ export const ColumnIds = {
 
 export const Items = memo(() => {
     const { itemsService } = useServices();
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState<any[]>([]);
+    const [itemsName, setItemsName] = useState<any[]>([]);
+    const [itemscategory, setItemsCategory] = useState<any[]>([]);
+    const [filterItemName, setFilterItemName] = useState('');
+    const [filterItemCategory, setFilterItemCategory] = useState('');
+    const selectedFilter = useRef('')
+
     const [isPending, startTransition] = useTransition();
 
     const getItems = useCallback(async () => {
 
-        let response = []
+        let response: any[] = []
         try {
             response = await itemsService.getItems() ?? [
                 { name: 'value1', category: 'c1', cost: 22, price: 44 },
@@ -32,17 +40,20 @@ export const Items = memo(() => {
         } catch (err) {
             console.log('Failed to fetch Items', err);
         }
-        const parsedRowData = response?.map((rowData: any, index: number) => {
-            return createData(index.toString(), rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId)
+        const parsedRowData: any[] = response?.map((rowData: any, index: number) => {
+            return { ...createData(generateShortId(), rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId) }
         });
-        startTransition(() => setRows(parsedRowData));
+        // originalRows.current = response;
+        startTransition(() => {
+            setRows(parsedRowData);
+            setItemsName(parsedRowData?.map((info: any) => (info[ColumnIds.NAME])) ?? []);
+            setItemsCategory(parsedRowData?.map((info: any) => (info[ColumnIds.CATEGORY])) ?? []);
+        });
     }, []);
 
     useEffect(() => {
-        startTransition(async () => await getItems());
+        startTransition(async () => getItems());
     }, []);
-
-
 
     const ItemsColumn: TableColumn[] = useMemo(() => ([
         {
@@ -103,24 +114,49 @@ export const Items = memo(() => {
         }
     ]), []);
 
+    const onNameFilterFocus = useCallback(() => {
+        selectedFilter.current = 'name-Filter';
+    }, []);
+
+    const onCategoryFilterFocus = useCallback(() => {
+        selectedFilter.current = 'category-Filter';
+    }, []);
+
+    const handleVoiceToText = useCallback((value: string) => {
+        console.log(value);
+        if (selectedFilter.current === 'name-Filter') {
+            setFilterItemName(value);
+        } else if (selectedFilter.current === 'category-Filter') {
+            setFilterItemCategory(value);
+        }
+    }, []);
 
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={'xl'} >
+            <VoiceToText language="kn-IN" setText={handleVoiceToText} />
             <Stack direction="row" spacing={6} width={'100%'} marginBottom={5} >
                 <Box width={'50%'}>
                     <Autocomplete
                         disablePortal
-                        options={rows?.map((info: any) => (info[ColumnIds.NAME])) ?? []}
+                        options={itemsName}
+                        onFocus={onNameFilterFocus}
+                        value={filterItemName}
                         sx={{ width: '100%' }}
-                        renderInput={(params) => <TextField {...params} label="Filter Item Name" />}
+                        renderInput={(params) => <TextField {...params}
+                            onChange={(args) => { setFilterItemName(args.target.value) }}
+                            label="Filter Item Name" />}
                     />
                 </Box>
                 <Box width={'50%'}>
                     <Autocomplete
                         disablePortal
-                        options={rows?.map((info: any) => (info[ColumnIds.CATEGORY])) ?? []}
+                        onFocus={onCategoryFilterFocus}
+                        value={filterItemCategory}
+                        options={itemscategory}
                         sx={{ width: '100%' }}
-                        renderInput={(params) => <TextField {...params} label="Filter Category" />}
+                        renderInput={(params) => <TextField {...params}
+                            onChange={(args) => { setFilterItemCategory(args.target.value) }}
+                            label="Filter Category" />}
                     />
                 </Box>
             </Stack>

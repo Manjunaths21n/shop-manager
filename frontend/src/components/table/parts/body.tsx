@@ -11,12 +11,11 @@ interface IEnhancedTableBody<T = object> {
     rowsPerPage: number;
     columns: TableColumn[];
     tableRows: any[];
-    orderBy: keyof T;
-    handleRowChange(value: T): void
+    orderBy: any;
 }
 
 export function EnhancedTableBody<T = object>(props: Readonly<IEnhancedTableBody<T>>) {
-    const { selected, page, order, rowsPerPage, orderBy, tableRows, columns, handleRowChange } = props;
+    const { selected, page, order, rowsPerPage, orderBy, tableRows, columns } = props;
 
     const visibleRows = useMemo(() => (
         [...tableRows]
@@ -34,7 +33,6 @@ export function EnhancedTableBody<T = object>(props: Readonly<IEnhancedTableBody
                             key={index}
                             selected={selected}
                             columns={columns}
-                            handleRowChange={handleRowChange}
                         />
                     );
                 }) :

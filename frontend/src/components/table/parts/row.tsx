@@ -8,21 +8,14 @@ interface IEnhancedTableBody<T = object> {
     selected: readonly number[];
     rowIndex: number;
     columns: TableColumn[];
-    handleRowChange(value: T): void;
 }
 
 export function TableRowCustom<T = object>(props: Readonly<IEnhancedTableBody<T>>) {
-    const { row: _row, selected, rowIndex, handleRowChange, columns } = props;
+    const { row: _row, selected, rowIndex, columns } = props;
 
     const row = _row as any;
 
     const isItemSelected = selected.includes(row.id);
-
-    const handleChange = <K extends keyof T>(field: K, value: T[K]) => {
-        const updated = { ...row };
-        updated[field] = value;
-        handleRowChange(updated);
-    };
 
     const cellRender = useCallback(() => {
         const cells: any[] = [];
