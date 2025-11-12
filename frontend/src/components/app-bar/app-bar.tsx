@@ -14,8 +14,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { Stack } from '@mui/material';
-import { useAppContext, type Languages } from '../../context';
-
+import { languageKeys, useAppContext, type Languages } from '../../context';
 
 export function ButtonAppBar() {
 
@@ -38,8 +37,8 @@ export function ButtonAppBar() {
       if (currentScreenRoute === "customer-dues") return PageTitle.SHOW_DUE_LIST;
       return '';
     }
-    setSelectedMenuItem(getCurrentScreenTitle())
-  }, [pathname]);
+    setSelectedMenuItem(translate(getCurrentScreenTitle()))
+  }, [pathname, translate]);
 
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
@@ -84,8 +83,8 @@ export function ButtonAppBar() {
                 label="Language"
                 sx={{ color: 'white', height: '35px', minWidth: '150px' }}
               >
-                <MenuItem value={'ka'}>ಕನ್ನಡ</MenuItem>
-                <MenuItem value={'en'}>English</MenuItem>
+                <MenuItem value={languageKeys.kn}>ಕನ್ನಡ</MenuItem>
+                <MenuItem value={languageKeys.en}>English</MenuItem>
               </Select>
             </Box>
             <Button color="inherit">Login</Button>
