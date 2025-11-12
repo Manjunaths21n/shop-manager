@@ -1,12 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Chip, Icon, IconButton, ListSubheader, Paper, Snackbar } from '@mui/material';
-import FormatListNumberedSharpIcon from '@mui/icons-material/FormatListNumberedSharp';
+import { Chip, IconButton, Paper, Snackbar } from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
@@ -14,46 +8,14 @@ import InfoIcon from '@mui/icons-material/Info';
 import { isMobile } from 'react-device-detect';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-export const PageTitle = {
-    ITEM_LIST: 'Item List - ಅಂಗಡಿ ಐಟಂಗಳ ಪಟ್ಟಿ',
-    ADD_ITEM: 'Add List - ಅಂಗಡಿಗೆ ವಸ್ತುಗಳನ್ನು ಸೇರಿಸಿ',
-    NEW_BILL: 'New Bill - ಹೊಸ ಬಿಲ್ ಸೇರಿಸಿ',
-    SHOW_DUE_LIST: 'Show Due List - ಬಾಕಿ ಪಟ್ಟಿಯನ್ನು ತೋರಿಸಿ'
-}
-
-const itemData = [
-    {
-        img: 'https://cdn.24.co.za/files/Cms/General/d/8741/0e0b7973549249ca9dcdb4c0b4179d01.jpg',
-        title: PageTitle.ITEM_LIST,
-        author: 'Admin',
-        disabled: false
-    },
-    {
-        img: 'https://t4.ftcdn.net/jpg/14/10/86/17/240_F_1410861742_cHRUL95nBpKBNpzUuOx8cntUshIWcIFs.jpg',
-        title: PageTitle.ADD_ITEM,
-        author: 'Admin',
-        disabled: false
-    },
-    {
-        img: 'https://t3.ftcdn.net/jpg/00/48/92/94/240_F_48929481_a1nyeajmdul5qkhWZixz7CBV9h0pwMKN.jpg',
-        title: PageTitle.NEW_BILL,
-        author: 'Admin',
-        disabled: true
-    },
-    {
-        img: 'https://t4.ftcdn.net/jpg/13/23/29/85/240_F_1323298567_E4oQkqnEXcvZAM54xln4RqG6W5DNsgQS.jpg',
-        title: PageTitle.SHOW_DUE_LIST,
-        author: 'User',
-        disabled: true
-    }
-];
-
+import { useAppContext } from '../../context';
+import { PageTitle, itemData } from './constants';
 
 export function TitlebarImageList() {
     const navigate = useNavigate();
     const [showNotification, setShowNotification] = React.useState(false);
     const [isClientMobile, setIsClientMobile] = useState(false);
+    const { translate } = useAppContext();
 
     useEffect(() => {
         // This runs only on client side
@@ -67,12 +29,11 @@ export function TitlebarImageList() {
         if (value === PageTitle.NEW_BILL) navigate("/new-bill");
         if (value === PageTitle.SHOW_DUE_LIST) navigate("/customer-dues");
     }, []);
+
     return (
         <>
             <ImageList
-                sx={{
-                    width: '100vw',
-                }}
+                sx={{ width: '100vw' }}
                 gap={20}
                 cols={isClientMobile ? 1 : 2} // Set number of columns
             >
@@ -136,7 +97,7 @@ export function TitlebarImageList() {
                                 )}
 
                                 <ImageListItemBar
-                                    title={`${item.title}`}
+                                    title={translate(item.title)}
                                     subtitle={item.author}
                                     actionIcon={
                                         <IconButton

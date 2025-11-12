@@ -133,7 +133,6 @@ export const Items = memo(() => {
 
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={'xl'} >
-            <VoiceToText language="kn-IN" setText={handleVoiceToText} />
             <Stack direction="row" spacing={6} width={'100%'} marginBottom={5} >
                 <Box width={'50%'}>
                     <Autocomplete

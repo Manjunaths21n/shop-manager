@@ -1,13 +1,15 @@
 import { RouterProvider } from 'react-router';
 import { storeManagerBrowserRouter } from './routes/routes';
-import { ServiceProvider } from './context';
+import { AppContextProvider, ServiceProvider } from './context';
 
 function App() {
 
   return (
+    <AppContextProvider>
     <ServiceProvider>
       <RouterProvider router={storeManagerBrowserRouter} />
     </ServiceProvider>
+    </AppContextProvider>
   );
 }
 

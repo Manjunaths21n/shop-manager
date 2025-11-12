@@ -5,19 +5,23 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { AppBarMenuItemList, SWAP_DRAWER_POSITION } from './app-bar-constants';
-import type { IDrawerState, TToggleDrawer, Anchor } from './app-bar-types';
-import { MenuDrawer } from './menu-drawer';
+import { SWAP_DRAWER_POSITION } from './app-bar-constants';
+import type { TToggleDrawer, Anchor } from './app-bar-types';
 import { useNavigate, useLocation } from 'react-router-dom';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { PageTitle } from '../../pages/home-tails/hose-tails';
+import { PageTitle } from '../../pages/home-tails/constants';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { type SelectChangeEvent } from '@mui/material/Select';
+import { Stack } from '@mui/material';
+import { useAppContext, type Languages } from '../../context';
 
 
 export function ButtonAppBar() {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const {language, onLanguageChange, translate}=useAppContext();
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
 
   const toggleDrawer: TToggleDrawer = useCallback((anchor: Anchor, open?: boolean) =>
@@ -36,7 +40,12 @@ export function ButtonAppBar() {
     }
     setSelectedMenuItem(getCurrentScreenTitle())
   }, [pathname]);
-  console.log(selectedMenuItem);
+
+
+  const handleLanguageChange = (event: SelectChangeEvent) => {
+    onLanguageChange(event.target.value as Languages)
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -56,15 +65,31 @@ export function ButtonAppBar() {
               {selectedMenuItem ?
                 <HomeOutlinedIcon fontSize='large' sx={{ fill: 'white' }} /> :
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'white' }}>
-                  Home - ಮುಖಪುಟ
+                  {translate('home')}
                 </Typography>}
-
             </IconButton>
             {selectedMenuItem ? <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'white' }}>
               {selectedMenuItem}
             </Typography> : null}
           </Breadcrumbs>
-          <Button color="inherit">Login</Button>
+          <Stack direction="row" spacing={2}>
+            <Box sx={{ height: '100%' }}>
+              <Typography component={'div'} sx={{ height: '25%' }}>{translate('language')}</Typography>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={language}
+                onChange={handleLanguageChange}
+                autoWidth
+                label="Language"
+                sx={{ color: 'white', height: '35px', minWidth: '150px' }}
+              >
+                <MenuItem value={'ka'}>ಕನ್ನಡ</MenuItem>
+                <MenuItem value={'en'}>English</MenuItem>
+              </Select>
+            </Box>
+            <Button color="inherit">Login</Button>
+          </Stack>
         </Toolbar>
       </AppBar>
     </Box>

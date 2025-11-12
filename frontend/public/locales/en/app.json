@@ -1,0 +1,10 @@
+{
+    "home": "Home",
+    "language": "Language",
+    "homePageTiles": {
+        "itemList": "Item List",
+        "addList": "Add List",
+        "newBill": "New Bill",
+        "showDueList": "Show Due List"
+    }
+}
