@@ -1,80 +1,50 @@
 export interface IClientService {
-    get(urlPath: string): Promise<any>;
-    post(urlPath: string, data: any): Promise<any>;
-    patch(urlPath: string, data: any): Promise<any>;
+    get<T>(urlPath: string): Promise<T>;
+    post<T>(urlPath: string, data: any): Promise<T>;
+    patch<T>(urlPath: string, data: any): Promise<T>;
+    delete<T>(urlPath: string, data?: any): Promise<T>;
 }
 
 export class ClientService implements IClientService {
     #baseURL: string;
+
     constructor(baseUrl: string) {
         this.#baseURL = baseUrl;
     }
 
-
-    async #fetch(urlPath: string) {
+    async #request<T>(method: string, urlPath: string, data?: any): Promise<T> {
         try {
-            return await fetch(`${this.#baseURL}/${urlPath}`);
+            const response = await fetch(`${this.#baseURL}/${urlPath}`, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: data ? JSON.stringify(data) : undefined,
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            return response.json();
         } catch (error: any) {
-            throw new Error(error);
+            throw new Error(error.message || String(error));
         }
     }
 
-    async get(urlPath: string) {
-
-        try {
-            const response = await this.#fetch(urlPath);
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-            return response.json();
-        } catch (err) {
-            throw new Error(`Failed to post data Error: ${err}`);
-        }
+    get<T>(urlPath: string): Promise<T> {
+        return this.#request("GET", urlPath);
     }
 
-    async post(urlPath: string, data: any) {
-        try {
-            const response = await fetch(`${this.#baseURL}/${urlPath}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-
-            return response.json();
-        } catch (err) {
-            throw new Error(`Failed to post data Error: ${err}`);
-        }
-
+    post<T>(urlPath: string, data: any): Promise<T> {
+        return this.#request("POST", urlPath, data);
     }
 
-    async patch(urlPath: string, data: any) {
-        try {
-            const response = await fetch(`${this.#baseURL}/${urlPath}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-
-            return response.json();
-        } catch (err) {
-            throw new Error(`Failed to post data Error: ${err}`);
-        }
-
+    patch<T>(urlPath: string, data: any): Promise<T> {
+        return this.#request("PATCH", urlPath, data);
     }
-    // delete() {
 
-    // }
-
+    delete<T>(urlPath: string, data?: any): Promise<T> {
+        return this.#request("DELETE", urlPath, data);
+    }
 }

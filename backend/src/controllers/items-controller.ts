@@ -64,6 +64,37 @@ export const getItems = async (req: any, res: any) => {
     }
 }
 
+
+export const deleteItems = async (req: any, res: any) => {
+    try {
+        const ids = req.body;
+        // Validate request body
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Request body must be a non-empty array",
+            });
+        }
+
+        // Bulk delete using $in
+        const result = await ItemsModel.deleteMany({ itemId: { $in: ids } });
+
+        return res.status(200).json({
+            success: true,
+            message: "Bulk delete completed",
+            deletedCount: result.deletedCount,
+        });
+
+    } catch (err: any) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete items",
+            error: err.message,
+        });
+    }
+};
+
+
 export const updateItems = async (req: any, res: any) => {
     try {
         if (!Array.isArray(req.body) || req.body.length === 0) {
