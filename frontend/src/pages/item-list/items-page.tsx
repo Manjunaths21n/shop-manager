@@ -3,11 +3,10 @@ import Container from "@mui/material/Container";
 import { useServices } from "../../context";
 import { createData } from "./mui-table-utils";
 import { TableRenderer } from "../../components/table";
-import { TextField, Box, Autocomplete, Stack, Skeleton } from "@mui/material";
+import { TextField, Box, Autocomplete, Stack } from "@mui/material";
 import type { IRenderCellArgs, TableColumn } from "../../components/table/types";
 import { TableSkeleton } from "../../components";
 import { generateShortId } from "../../utils";
-import { VoiceToText } from "../../components/mic/mic-component";
 
 export const ColumnIds = {
     NAME: 'name',
@@ -31,7 +30,7 @@ export const Items = memo(() => {
 
         let response: any[] = []
         try {
-            response = await itemsService.getItems() ?? [
+            response = await itemsService.getItems() as Record<string, any>[] ?? [
                 { name: 'value1', category: 'c1', cost: 22, price: 44 },
                 { name: 'value2', category: 'c2', cost: 40, price: 45 },
                 { name: 'value3', category: 'c3', cost: 30, price: 34 },

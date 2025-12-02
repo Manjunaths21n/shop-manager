@@ -34,18 +34,18 @@ const generateItemIdByItems = (items: any[]) => {
 
 export const AddItems = memo(() => {
     const { itemsService } = useServices();
-    const [rows, setRows] = useState<any[]>([]);
+    const [rows, setRows] = useState<Record<string, any>[]>([]);
     const [enableEdit, setEnableEdit] = useState<boolean>(false);
     const [selectedRowId, setSelectedRowId] = useState<string[]>([])
     const [isPending, startTransition] = useTransition();
 
-    const originalRows = useRef<any[]>([])
+    const originalRows = useRef<Record<string, any>[]>([])
     const navigate = useNavigate();
 
     const getItems = useCallback(async () => {
-        let response: any[] = []
+        let response: Record<string, any>[] = []
         try {
-            response = await itemsService.getItems() ?? [
+            response = (await itemsService.getItems() as Record<string, any>[]) ?? [
                 { name: 'value1', category: 'c1', cost: 22, price: 44 },
                 { name: 'value2', category: 'c2', cost: 40, price: 45 },
                 { name: 'value3', category: 'c3', cost: 30, price: 34 },
@@ -54,10 +54,10 @@ export const AddItems = memo(() => {
         } catch (err) {
             console.log('Failed to fetch Items', err);
         }
-        const parsedRowData: any[] = response?.map((rowData: any, index: number) => {
+        const parsedRowData: any[] = response?.map((rowData: any) => {
             return { ...createData(generateShortId(), rowData.name, rowData.category, rowData.cost, rowData.price, rowData.itemId) }
         });
-        originalRows.current = response;
+        originalRows.current = parsedRowData;
         startTransition(() => setRows(parsedRowData));
     }, []);
 
@@ -279,27 +279,34 @@ export const AddItems = memo(() => {
         let latestItemId = Number(generateItemIdByItems(originalRows.current))
         const newItems: any[] = [];
         const existedItems: any[] = [];
+        const deletedRows = originalRows.current.filter((info) => (!rows.some((rowInfo) => (rowInfo.itemId === info.itemId))));
+
         rows.forEach(info => {
+            const itemInfo = {
+                name: info.name,
+                category: info.category,
+                cost: info.cost,
+                price: info.price,
+                itemId: info.itemId
+            }
             info.isNewItem ?
-                newItems.push({
-                    name: info.name,
-                    category: info.category,
-                    cost: info.cost,
-                    price: info.price,
-                    itemId: `${++latestItemId}`
-                }) :
-                existedItems.push({
-                    name: info.name,
-                    category: info.category,
-                    cost: info.cost,
-                    price: info.price,
-                    itemId: info.itemId
-                });
+                newItems.push({ ...itemInfo, itemId: `${++latestItemId}` }) :
+                existedItems.push({ ...itemInfo });
         })
-        const res = newItems.length && await itemsService.addItems(newItems);
-        const updateRes = existedItems.length && await itemsService.updateItems(existedItems);
-        console.log('addItems res', res);
-        console.log('updateItems res', updateRes);
+        if (newItems.length) {
+            const res = await itemsService.addItems(newItems);
+            console.log('addItems res', res);
+        }
+
+        if (existedItems.length) {
+            const updateRes = await itemsService.updateItems(existedItems);
+            console.log('updateItems res', updateRes);
+        }
+
+        if (deletedRows.length) {
+            const deleteItemsRes = await itemsService.deleteItems(deletedRows.map((deletedItems) => deletedItems.itemId));
+            console.log('deleteItems Res', deleteItemsRes);
+        }
         navigate("/");
     }, [rows]);
 
