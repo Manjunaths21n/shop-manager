@@ -1,12 +1,16 @@
+
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Container from "@mui/material/Container";
 import { useServices } from "../../context";
 import { createData } from "./mui-table-utils";
 import { TableRenderer } from "../../components/table";
-import { TextField, Box, Autocomplete, Stack } from "@mui/material";
+import { TextField, Box, Autocomplete, Stack, Icon, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import type { IRenderCellArgs, TableColumn } from "../../components/table/types";
 import { TableSkeleton } from "../../components";
 import { generateShortId } from "../../utils";
+import GridViewIcon from '@mui/icons-material/GridView';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import { GridViewRender } from "./grid-layout";
 
 export const ColumnIds = {
     NAME: 'name',
@@ -18,6 +22,7 @@ export const ColumnIds = {
 export const Items = memo(() => {
     const { itemsService } = useServices();
     const [rows, setRows] = useState<any[]>([]);
+    const [viewType, setViewType] = useState<'grid-view'|'table-view'>('table-view');
     const [itemsName, setItemsName] = useState<any[]>([]);
     const [itemscategory, setItemsCategory] = useState<any[]>([]);
     const [filterItemName, setFilterItemName] = useState('');
@@ -121,18 +126,17 @@ export const Items = memo(() => {
         selectedFilter.current = 'category-Filter';
     }, []);
 
-    const handleVoiceToText = useCallback((value: string) => {
-        console.log(value);
-        if (selectedFilter.current === 'name-Filter') {
-            setFilterItemName(value);
-        } else if (selectedFilter.current === 'category-Filter') {
-            setFilterItemCategory(value);
-        }
-    }, []);
+ const handleViewType = (
+    event: React.MouseEvent<HTMLElement>,
+    newAlignment: string | null,
+  ) => {
+    console.log(newAlignment );
+    setViewType(newAlignment as any);
+  };
 
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={'xl'} >
-            <Stack direction="row" spacing={6} width={'100%'} marginBottom={5} >
+            <Stack direction="row" spacing={1} width={'100%'} marginBottom={5} >
                 <Box width={'50%'}>
                     <Autocomplete
                         disablePortal
@@ -145,7 +149,7 @@ export const Items = memo(() => {
                             label="Filter Item Name" />}
                     />
                 </Box>
-                <Box width={'50%'}>
+                <Box width={'40%'}>
                     <Autocomplete
                         disablePortal
                         onFocus={onCategoryFilterFocus}
@@ -157,8 +161,24 @@ export const Items = memo(() => {
                             label="Filter Category" />}
                     />
                 </Box>
+                <Box width={'10%'} minWidth={'100px'} sx={{ alignContent: 'center' }}>
+                    <ToggleButtonGroup
+                        orientation="horizontal"
+                        value={viewType}
+                        exclusive={true}
+                        onChange={handleViewType}
+                    >
+                        <ToggleButton value="grid-view" aria-label="grid-view">
+                            <GridViewIcon fontSize="medium" />
+                        </ToggleButton>
+                        <ToggleButton value="table-view" aria-label="table-view">
+                            <TableChartIcon fontSize="medium" />
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </Box>
             </Stack>
-            {isPending ? <TableSkeleton /> : <TableRenderer data={rows} columns={ItemsColumn} />}
+            
+            {isPending ? <TableSkeleton /> :viewType==='grid-view'?<GridViewRender data={rows}/>: <TableRenderer data={rows} columns={ItemsColumn} />}
         </Container>
     );
 });
